@@ -1,0 +1,64 @@
+{% extends 'users/base.html' %}
+
+{% block content %}
+    <br>
+    <div class="alert alert-success" role="alert">
+        <h3 style="text-align: center;">Borrower Sign Up</h3>
+    </div>
+    <br>
+    <form id="signup-form" method="post">
+        {% csrf_token %}
+        {% for field in form %}
+        <p>
+            {{ field.label_tag }}<br>
+            {{ field }}
+            {% if field.help_text %}
+            <small style="color: grey">{{ field.help_text }}</small>
+            {% endif %}
+            {% for error in field.errors %}
+            <p style="color: red">{{ error }}</p>
+            {% endfor %}
+        </p>
+        {% endfor %}
+        <p>
+            Loan Percent Income:
+            <p id="loan-income-percent">-</p>
+        </p>
+        <button type="submit">Sign up</button>
+    </form>
+    <script>
+        var form = document.getElementById('signup-form');
+
+        var loan_amount_field = form.elements.loan_amount;
+        var monthly_income_field = form.elements.monthly_income;
+
+        var loan_percent_text = document.getElementById("loan-income-percent");
+
+        function updatePercentIncome() {
+            try {
+                var loan_amount = parseFloat(loan_amount_field.value);
+                var monthly_income = parseFloat(monthly_income_field.value);
+
+                var loan_income_percent = loan_amount / monthly_income;
+
+                if (isNaN(loan_income_percent)) {
+                    loan_percent_text.textContent = '-';
+                    return;
+                }
+
+                loan_income_percent = loan_income_percent.toFixed(2);
+
+                console.log(loan_amount_field);
+
+                loan_percent_text.textContent = loan_income_percent;
+
+            } catch(e) {
+                loan_percent_text.textContent = '-';
+            }
+        }
+
+        loan_amount_field.onkeyup = updatePercentIncome;
+        monthly_income_field.onkeyup = updatePercentIncome;
+        
+    </script>
+{% endblock content%}
