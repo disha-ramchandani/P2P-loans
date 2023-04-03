@@ -20,8 +20,8 @@ class SignupForm(UserCreationForm):
         ('PERSONAL', 'Personal'),
     )
 
-    first_name = forms.CharField(max_length=50, required=False, help_text='Optional.')
-    last_name = forms.CharField(max_length=50, required=False, help_text='Optional.')
+    first_name = forms.CharField(max_length=50, required=True)
+    last_name = forms.CharField(max_length=50, required=True)
     email = forms.EmailField(max_length=120, help_text='Required. Enter a valid email address.')
 
     age = forms.FloatField(min_value=18, max_value=120, help_text="Please make sure that you are at least an adult to be be eligible to apply for a loan.")
