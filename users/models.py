@@ -23,6 +23,9 @@ class Profile(models.Model):
     cb_person_default_on_file = models.BooleanField(default=False)
     cb_person_cred_hist_length = models.FloatField(default=0)
 
+    liquid_funds = models.FloatField(default=0)
+    is_borrower = models.BooleanField(default=False)
+
 @receiver(post_save, sender=User)
 def update_user_profile(sender, instance, created, **kwargs):
     # if created:

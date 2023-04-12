@@ -1,21 +1,51 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import login, authenticate
+from .models import Profile
+from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.forms import UserCreationForm
-from .forms import SignupForm
+from .forms import BorrowerSignUpForm, LenderSignUpForm
 from . import ml_model
+import math
+
 
 def landing_page(request):
     return render(request, 'users/landing_page.html')
 
 def home(request):
-    return render(request, 'users/home.html')
+    if request.user.is_authenticated:
+        user_is_borrower = hasattr(request.user.profile, "is_borrower") and request.user.profile.is_borrower
+        if user_is_borrower:
+            return render(request, 'users/borrower/home.html')
+        else:
+            loan_grades = ['A', 'B', 'C', 'D', 'E']
+            liquid_funds = math.inf
 
-def signup(request):
+            if request.method == "POST":
+                liquid_funds = request.data.liquid_funds
+                
+
+            relevant_profiles = Profile.objects.filter(is_borrower=True, loan_grade__in=loan_grades, loan_amnt__lte=liquid_funds)
+
+            return render(request, 'users/lender/home.html', {"profiles": relevant_profiles, "loan_options": BorrowerSignUpForm.PERSON_LOAN_INTENT_OPTIONS})
+    
+    return redirect("getstarted")
+
+def getstarted(request):
+    if request.user.is_authenticated:
+        return redirect("home")
+
+    return render(request, 'users/get_started.html')
+
+def signup_borrower(request):
+    if request.user.is_authenticated:
+        return redirect("home")
+
     if request.method == 'POST':
-        form = SignupForm(request.POST)
+        form = BorrowerSignUpForm(request.POST)
         if form.is_valid():
             user = form.save()
             user.refresh_from_db()
+
+            user.profile.is_borrower = True
 
             # user.profile.birth_date = form.cleaned_data.get('birth_date')
             
@@ -43,7 +73,35 @@ def signup(request):
             login(request, user)
             return redirect('home')
     else:
-        form = SignupForm()
+        form = BorrowerSignUpForm()
         
     context = { 'form': form }
-    return render(request, 'users/signup.html', context)
+    return render(request, 'users/borrower/signup.html', context)
+
+def signup_lender(request):
+
+    if request.user.is_authenticated:
+        return redirect("home")
+
+    if request.method == 'POST':
+        form = LendferSignUpForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            user.refresh_from_db()
+            user.profile.is_borrower = False
+            user.profile.liquid_funds = form.cleaned_data.get('liquid_funds')
+            user.save()
+            username = form.cleaned_data.get('username')
+            raw_password = form.cleaned_data.get('password1')
+            user = authenticate(username=username, password=raw_password)
+            login(request, user)
+            return redirect('home')
+    else:
+        form = LenderSignUpForm()
+        
+    context = { 'form': form }
+    return render(request, 'users/lender/signup.html', context)
+
+def logout_page(request):
+    logout(request)
+    return redirect("landing")

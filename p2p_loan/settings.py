@@ -119,13 +119,12 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
-STATIC_URL = 'landing/assets/'
+STATIC_URL = 'assets/'
 
 print(BASE_DIR / "assets")
 
 STATICFILES_DIRS = [
     BASE_DIR / "assets",
-    '/var/www/static/',
 ]
 
 LOGIN_REDIRECT_URL = 'home'
