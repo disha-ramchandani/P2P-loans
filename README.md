@@ -1,2 +1,5 @@
 # P2P-loans
-Final project
+The Money Merchant Web Application creates a nexus between lenders and borrowers. The unique point is giving the lender discretion by choosing the borrower based on their credit risk score that will be assessed by our platform; thereby reducing non-payment of loans. The platform will also ensure defaulters cannot apply for further loans and will have their cibil score affected in case of default.
+Each Borrower or Lender will first have to build a profile within on the platform according to their agenda and enter details such as Income, Age, Loan Amount needed, Interest Rate, etc.Now models will rate the borrowers based on these and parameters the lenders can disburse loans as per their preference. A chatbot/VC platform will be set up to enhance trust between buyers and lenders. 
+Additional Provisions will be set up wherein defaulters/lenders cannot seek other loans unless their pending loan is not cleared and will not be allowed to further use services of the app. All in all the main motive of the web app is to bring lenders and borrowers on a common platform for enhanced liquidity and giving parties an opportunity and liberty to have desired rate of interest based on their profile on a negotiable basis.
+
